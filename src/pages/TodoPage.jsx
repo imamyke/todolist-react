@@ -30,7 +30,7 @@ const TodoPage = () => {
   const handleChange = (value) => {
     setInputValue(value);
   };
-  const handleTodo = () => {
+  const handleAddTodo = () => {
     if (inputValue.length === 0) {
       return;
     }
@@ -46,16 +46,45 @@ const TodoPage = () => {
     });
     setInputValue('');
   };
+  const handleKeyDown = () => {
+    if (inputValue.length === 0) {
+      return;
+    }
+    setTodos((prevTodos) => {
+      return [
+        ...prevTodos,
+        {
+          id: Math.random() * 100,
+          title: inputValue,
+          isDone: false,
+        },
+      ];
+    });
+    setInputValue('');
+  };
+  const handleToggleDown = (id) => {
+    setTodos((prevTodos) => {
+      return prevTodos.map((todo) => {
+        if (todo.id === id) {
+          return {
+            ...todo,
+            isDone: !todo.isDone,
+          };
+        }
+        return todo;
+      });
+    });
+  };
   return (
     <div>
-      TodoPage
       <Header />
       <TodoInput
         inputValue={inputValue}
         onChange={handleChange}
-        onAddTodo={handleTodo}
+        onAddTodo={handleAddTodo}
+        onKeyDown={handleKeyDown}
       />
-      <TodoCollection todos={todos} />
+      <TodoCollection todos={todos} onToggleDone={handleToggleDown} />
       <Footer />
     </div>
   );
