@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import { useNavigate } from 'react-router-dom';
+import { useAuth } from 'contexts/AuthContext';
 
 const StyledFooter = styled.footer`
   display: flex;
@@ -33,16 +33,16 @@ const StyledButton = styled.button`
 `;
 
 const Footer = ({ amount }) => {
-  const navigate = useNavigate();
+  const { logout } = useAuth();
 
-  const handleClick = () => {
-    localStorage.removeItem('authToken');
-    navigate('/login');
-  };
+  // const handleClick = () => {
+  //   localStorage.removeItem('authToken');
+  //   navigate('/login');
+  // };
   return (
     <StyledFooter>
       <p>剩餘項目數： {amount}</p>
-      <StyledButton onClick={handleClick}>登出</StyledButton>
+      <StyledButton onClick={logout}>登出</StyledButton>
     </StyledFooter>
   );
 };
