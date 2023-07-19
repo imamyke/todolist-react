@@ -3,9 +3,10 @@ import { Footer, Header, TodoCollection, TodoInput } from 'components';
 import { useEffect, useState } from 'react';
 import { getTodos, createTodo, patchTodo, deleteTodo } from 'api/todo';
 import { useNavigate } from 'react-router-dom';
-import { checkPermission } from '../api/auth';
+import { useAuth } from 'contexts/AuthContext';
 
 const TodoPage = () => {
+  const { isAuthenticated } = useAuth();
   const [inputValue, setInputValue] = useState('');
   const [todos, setTodos] = useState([]);
   const navigate = useNavigate();
@@ -131,6 +132,7 @@ const TodoPage = () => {
     }
   };
 
+  // 顯示全部的 todo
   useEffect(() => {
     const getTodosAsync = async () => {
       try {
@@ -142,20 +144,12 @@ const TodoPage = () => {
     };
     getTodosAsync();
   }, []);
-  useEffect(() => {
-    const checkTokenIsValid = async () => {
-      const authToken = localStorage.getItem('authToken');
-      if (!authToken) {
-        navigate('/login');
-      }
-      const result = await checkPermission(authToken);
-      if (!result) {
-        navigate('/login');
-      }
-    };
 
-    checkTokenIsValid();
-  }, [navigate]);
+  useEffect(() => {
+    if (!isAuthenticated) {
+      navigate('/login');
+    }
+  }, [navigate, isAuthenticated]);
 
   return (
     <StyledTodoListContainer>

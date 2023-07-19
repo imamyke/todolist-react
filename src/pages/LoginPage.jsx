@@ -9,9 +9,11 @@ import { AuthInput } from 'components';
 import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
-import { login, checkPermission } from '../api/auth';
+import { useAuth } from 'contexts/AuthContext';
+// import { login, checkPermission } from '../api/auth';
 
 const LoginPage = () => {
+  const { login, isAuthenticated } = useAuth();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
@@ -23,12 +25,12 @@ const LoginPage = () => {
     if (password.length === 0) {
       return;
     }
-    const { success, authToken } = await login({
+    // 回傳值變成只有一個布林值
+    const success = await login({
       username,
       password,
     });
     if (success) {
-      localStorage.setItem('authToken', authToken);
       // 登入成功訊息
       Swal.fire({
         position: 'top',
@@ -37,7 +39,6 @@ const LoginPage = () => {
         icon: 'success',
         showConfirmButton: false,
       });
-      navigate('/todos');
       return;
     }
     // 登入失敗訊息
@@ -51,19 +52,10 @@ const LoginPage = () => {
   };
 
   useEffect(() => {
-    const checkTokenIsValid = async () => {
-      const authToken = localStorage.getItem('authToken');
-      if (!authToken) {
-        return;
-      }
-      const result = await checkPermission(authToken);
-      if (result) {
-        navigate('/todos');
-      }
-    };
-
-    checkTokenIsValid();
-  }, [navigate]);
+    if (isAuthenticated) {
+      navigate('/todos');
+    }
+  }, [navigate, isAuthenticated]);
 
   return (
     <AuthContainer>
