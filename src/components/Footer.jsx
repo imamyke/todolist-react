@@ -34,15 +34,14 @@ const StyledButton = styled.button`
 
 const Footer = ({ amount }) => {
   const { logout } = useAuth();
+  const handleClick = () => {
+    logout();
+  };
 
-  // const handleClick = () => {
-  //   localStorage.removeItem('authToken');
-  //   navigate('/login');
-  // };
   return (
     <StyledFooter>
       <p>剩餘項目數： {amount}</p>
-      <StyledButton onClick={logout}>登出</StyledButton>
+      <StyledButton onClick={handleClick}>登出</StyledButton>
     </StyledFooter>
   );
 };

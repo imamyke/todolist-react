@@ -153,7 +153,7 @@ const TodoPage = () => {
 
   return (
     <StyledTodoListContainer>
-      <Header username={currentMember.name} />
+      <Header username={currentMember?.name} />
       <TodoInput
         inputValue={inputValue}
         onChange={handleChange}

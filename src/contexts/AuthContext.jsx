@@ -1,6 +1,6 @@
+import { login, register, checkPermission } from 'api/auth';
 import { createContext, useContext, useState, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
-import { login, register, checkPermission } from 'api/auth';
 import * as jwt from 'jsonwebtoken';
 
 const defaultAuthContext = {
@@ -37,7 +37,6 @@ export const AuthProvider = ({ children }) => {
         setPayload(null);
       }
     };
-
     checkTokenIsValid();
   }, [pathname]);
 
@@ -88,6 +87,8 @@ export const AuthProvider = ({ children }) => {
           setIsAuthenticated(false);
         },
       }}
-    ></AuthContext.Provider>
+    >
+      {children}
+    </AuthContext.Provider>
   );
 };

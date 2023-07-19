@@ -10,7 +10,6 @@ import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { useAuth } from 'contexts/AuthContext';
-// import { login, checkPermission } from '../api/auth';
 
 const LoginPage = () => {
   const { login, isAuthenticated } = useAuth();
