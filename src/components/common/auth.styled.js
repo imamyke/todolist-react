@@ -1,12 +1,16 @@
 import styled from 'styled-components';
 
 const StyedContainer = styled.div`
+  background: #fff; // add
+  width: 40%; // add
+  margin: 50px auto; // add
+  padding: 50px 0; // add
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-top: 50px;
+  /* margin-top: 50px; */
 `;
 
 const StyledAuthInputContainer = styled.div`

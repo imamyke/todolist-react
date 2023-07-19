@@ -1,6 +1,7 @@
+import styled from 'styled-components';
 import { Footer, Header, TodoCollection, TodoInput } from 'components';
 import { useEffect, useState } from 'react';
-import { getTodos, createTodo } from 'api/todo';
+import { getTodos, createTodo, patchTodo, deleteTodo } from 'api/todo';
 
 const TodoPage = () => {
   const [inputValue, setInputValue] = useState('');
@@ -58,18 +59,27 @@ const TodoPage = () => {
       console.error(error);
     }
   };
-  const handleToggleDown = (id) => {
-    setTodos((prevTodos) => {
-      return prevTodos.map((todo) => {
-        if (todo.id === id) {
-          return {
-            ...todo,
-            isDone: !todo.isDone,
-          };
-        }
-        return todo;
+  const handleToggleDown = async (id) => {
+    const currentTodo = todos.find((todo) => todo.id === id);
+    try {
+      await patchTodo({
+        id,
+        isDone: !currentTodo.isDone,
       });
-    });
+      setTodos((prevTodos) => {
+        return prevTodos.map((todo) => {
+          if (todo.id === id) {
+            return {
+              ...todo,
+              isDone: !todo.isDone,
+            };
+          }
+          return todo;
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
   const handleChangeMode = ({ id, isEdit }) => {
     setTodos((prevTodos) => {
@@ -84,10 +94,37 @@ const TodoPage = () => {
       });
     });
   };
-  const handleDelete = (id) => {
-    setTodos((prevTodos) => {
-      return prevTodos.filter((todo) => todo.id !== id);
-    });
+  const handleSave = async ({ id, title }) => {
+    try {
+      await patchTodo({
+        id,
+        title,
+      });
+      setTodos((prevTodos) => {
+        return prevTodos.map((todo) => {
+          if (todo.id === id) {
+            return {
+              ...todo,
+              title,
+              isEdit: false,
+            };
+          }
+          return todo;
+        });
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+  const handleDelete = async (id) => {
+    try {
+      await deleteTodo(id);
+      setTodos((prevTodos) => {
+        return prevTodos.filter((todo) => todo.id !== id);
+      });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   useEffect(() => {
@@ -103,7 +140,7 @@ const TodoPage = () => {
   }, []);
 
   return (
-    <div>
+    <StyledTodoListContainer>
       <Header />
       <TodoInput
         inputValue={inputValue}
@@ -116,10 +153,18 @@ const TodoPage = () => {
         onToggleDone={handleToggleDown}
         onChangeMode={handleChangeMode}
         onDelete={handleDelete}
+        onSave={handleSave}
       />
       <Footer amount={todos.length} />
-    </div>
+    </StyledTodoListContainer>
   );
 };
 
 export default TodoPage;
+
+const StyledTodoListContainer = styled.div`
+  background: #fff; // add
+  width: 40%; // add
+  margin: 50px auto; // add
+  padding: 50px 0; // add
+`;
